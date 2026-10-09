@@ -1,6 +1,7 @@
 from PIL import Image
 
-from png2svg.imaging import load_image, average_color
+from png2svg.imaging import average_color, load_image
+
 
 def test_load_image_returns_rgb(tmp_path):
     path = tmp_path / "a.png"
@@ -8,6 +9,7 @@ def test_load_image_returns_rgb(tmp_path):
     img = load_image(path)
     assert img.mode == "RGB"
     assert img.size == (10, 5)
+
 
 def test_average_of_uniform_image():
     img = Image.new("RGB", (50, 50), (10, 20, 30))
