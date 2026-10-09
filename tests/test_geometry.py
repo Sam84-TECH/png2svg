@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from png2svg.geometry import hexagon_points
+from png2svg.geometry import hexagon_centers, hexagon_points
 
 
 def test_hexagon_has_six_points():
@@ -22,13 +22,6 @@ def test_first_point_is_top_vertex():
 def test_width_is_sqrt3_times_r():
     xs = [p[0] for p in hexagon_points(0, 0, 10)]
     assert max(xs) - min(xs) == pytest.approx(math.sqrt(3) * 10)
-
-
-import math
-
-import pytest
-
-from png2svg.geometry import hexagon_centers
 
 
 def test_first_center_is_origin():
