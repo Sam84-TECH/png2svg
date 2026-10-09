@@ -14,3 +14,4 @@ def hexagon_points(cx: float, cy: float, r: float) -> list[Point]:
         )
         for k in range(6)
     ]
+
