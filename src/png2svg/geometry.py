@@ -15,6 +15,7 @@ def hexagon_points(cx: float, cy: float, r: float) -> list[Point]:
         for k in range(6)
     ]
 
+
 def hexagon_centers(width: float, height: float, r: float) -> list[Point]:
     """Return hexagon centers covering a width x height area (odd rows shifted)."""
     dx = math.sqrt(3) * r

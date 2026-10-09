@@ -23,6 +23,7 @@ def test_width_is_sqrt3_times_r():
     xs = [p[0] for p in hexagon_points(0, 0, 10)]
     assert max(xs) - min(xs) == pytest.approx(math.sqrt(3) * 10)
 
+
 import math
 
 import pytest
