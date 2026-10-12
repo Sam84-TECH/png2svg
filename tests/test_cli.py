@@ -24,6 +24,7 @@ def test_main_requires_arguments():
     with pytest.raises(SystemExit):
         main([])
 
+
 def test_parser_orientation_default_is_flat():
     assert build_parser().parse_args(["a.png", "b.svg"]).orientation == "flat"
 

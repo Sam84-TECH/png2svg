@@ -5,9 +5,7 @@ import math
 Point = tuple[float, float]
 
 
-def hexagon_points(
-    cx: float, cy: float, r: float, orientation: str = "pointy"
-) -> list[Point]:
+def hexagon_points(cx: float, cy: float, r: float, orientation: str = "pointy") -> list[Point]:
     """Return the 6 vertices of a hexagon ("pointy" or "flat" top)."""
     if orientation not in ("pointy", "flat"):
         raise ValueError(f"Unknown orientation: {orientation}")

@@ -44,6 +44,7 @@ def test_grid_covers_the_image():
     assert max(c[0] for c in centers) >= 100
     assert max(c[1] for c in centers) >= 100
 
+
 def test_flat_top_has_flat_top_edge():
     pts = hexagon_points(0, 0, 10, orientation="flat")
     ys = sorted(round(p[1], 6) for p in pts)
