@@ -114,4 +114,4 @@ png2svg/
 
 ## Author
 
-<Your name>, Refresher in Computer Science 2026-2027
+KOUYELE Samaa Ashley, Refresher in Computer Science 2026-2027
