@@ -10,3 +10,7 @@ dist/
 site/
 
 samples/out_*.svg
+
+notebooks/__marimo__/
+samples/output.svg
+samples/out_*.svg
