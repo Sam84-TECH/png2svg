@@ -13,4 +13,3 @@ def test_svg_contains_one_polygon_per_hexagon():
     svg = build_svg(10, 10, [(pts, (255, 0, 0)), (pts, (0, 255, 0))])
     assert svg.count("<polygon") == 2
     assert "rgb(255,0,0)" in svg
-    
