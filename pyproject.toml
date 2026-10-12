@@ -47,3 +47,6 @@ source = ["src"]
 [tool.coverage.report]
 show_missing = true
 fail_under = 90
+
+[project.scripts]
+png2svg = "png2svg.cli:main"
