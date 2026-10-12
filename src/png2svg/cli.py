@@ -12,7 +12,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("input", help="Input PNG file")
     parser.add_argument("output", help="Output SVG file")
-    parser.add_argument("--radius", type=float, default=10.0, help="Hexagon radius in pixels")
+    parser.add_argument("--radius", type=float, default=12.0, help="Hexagon radius in pixels")
     return parser
 
 
