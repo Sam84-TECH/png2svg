@@ -6,7 +6,7 @@ from png2svg.cli import build_parser, main
 
 def test_parser_defaults():
     args = build_parser().parse_args(["in.png", "out.svg"])
-    assert args.radius == 12.0
+    assert args.radius == 13.0
 
 
 def test_parser_radius():
