@@ -6,7 +6,7 @@ from png2svg.cli import build_parser, main
 
 def test_parser_defaults():
     args = build_parser().parse_args(["in.png", "out.svg"])
-    assert args.radius == 12.0
+    assert args.radius == 13.0
 
 
 def test_parser_radius():
@@ -23,3 +23,12 @@ def test_main_creates_svg(tmp_path):
 def test_main_requires_arguments():
     with pytest.raises(SystemExit):
         main([])
+
+
+def test_parser_orientation_default_is_flat():
+    assert build_parser().parse_args(["a.png", "b.svg"]).orientation == "flat"
+
+
+def test_parser_orientation_pointy():
+    args = build_parser().parse_args(["a.png", "b.svg", "--orientation", "pointy"])
+    assert args.orientation == "pointy"
