@@ -13,12 +13,18 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("input", help="Input PNG file")
     parser.add_argument("output", help="Output SVG file")
     parser.add_argument("--radius", type=float, default=12.0, help="Hexagon radius in pixels")
+    parser.add_argument(
+        "--orientation",
+        choices=["pointy", "flat"],
+        default="flat",
+        help="Hexagon orientation (default: flat)",
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> None:
     args = build_parser().parse_args(argv)
-    convert_file(Path(args.input), Path(args.output), args.radius)
+    convert_file(Path(args.input), Path(args.output), args.radius, args.orientation)
 
 
 if __name__ == "__main__":
