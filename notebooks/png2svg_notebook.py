@@ -16,7 +16,7 @@ with app.setup:
 def _():
     mo.md("""
     # png2svg
-    Choisis une image (PNG ou JPG) et la taille des hexagones.
+    Choisis une image (PNG ou JPG), la taille et l'orientation des hexagones.
     """)
     return
 
@@ -24,16 +24,17 @@ def _():
 @app.cell
 def _():
     upload = mo.ui.file(filetypes=[".png", ".jpg", ".jpeg"], kind="area")
-    radius = mo.ui.slider(3, 40, value=12, label="Rayon")
-    mo.vstack([upload, radius])
-    return radius, upload
+    radius = mo.ui.slider(3, 40, value=13, label="Rayon")
+    orientation = mo.ui.dropdown(["flat", "pointy"], value="flat", label="Orientation")
+    mo.vstack([upload, radius, orientation])
+    return orientation, radius, upload
 
 
 @app.cell
-def _(radius, upload):
+def _(orientation, radius, upload):
     mo.stop(not upload.value, mo.md("Charge une image pour lancer la conversion."))
     img = Image.open(io.BytesIO(upload.contents()))
-    svg = image_to_svg(img, radius.value)
+    svg = image_to_svg(img, radius.value, orientation.value)
     mo.Html(svg)
     return (svg,)
 
