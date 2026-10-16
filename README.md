@@ -43,6 +43,7 @@ uv run png2svg samples/input.jpg output.svg --radius 13 --orientation flat
 | `output` | Output SVG file | required |
 | `--radius` | Hexagon radius in pixels | `13` |
 | `--orientation` | `flat` (flat top) or `pointy` (pointed top) | `flat` |
+| `--shape` | `hexagon` or `triangle` (side = `--radius`; `--orientation` applies to hexagons only) | `hexagon` |
 
 Open the SVG in a browser or in Inkscape.
 
