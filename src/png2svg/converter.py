@@ -1,13 +1,26 @@
-"""High-level image to SVG conversion."""
+"""High-level PNG to SVG conversion (object-oriented core + functional facade)."""
 
-import math
 from pathlib import Path
 
 from PIL import Image
 
-from png2svg.geometry import Point, hexagon_centers, hexagon_points, triangle_grid
-from png2svg.imaging import Color, average_color, load_image
+from png2svg.coloring import Colorizer, Distribution, ImageColorizer, PaletteColorizer
+from png2svg.imaging import Color, load_image
 from png2svg.svg import build_svg
+from png2svg.tiling import Tiling, make_tiling
+
+
+class Converter:
+    """Turn a canvas into an SVG by combining a tiling and a colorizer."""
+
+    def __init__(self, tiling: Tiling, colorizer: Colorizer) -> None:
+        self.tiling = tiling
+        self.colorizer = colorizer
+
+    def render(self, width: int, height: int) -> str:
+        """Return the SVG string for a width x height canvas."""
+        polygons = [(cell, self.colorizer.color(cell)) for cell in self.tiling.cells(width, height)]
+        return build_svg(width, height, polygons)
 
 
 def image_to_svg(
@@ -16,24 +29,11 @@ def image_to_svg(
     orientation: str = "pointy",
     shape: str = "hexagon",
 ) -> str:
-    """Convert a PIL image into an SVG string made of hexagons or triangles."""
+    """Convert a PIL image into an SVG made of hexagons or triangles."""
+    tiling = make_tiling(shape, radius, orientation)
     rgb = image.convert("RGB")
-    width, height = rgb.size
-    cells: list[tuple[list[Point], Color]] = []
-    if shape == "hexagon":
-        for cx, cy in hexagon_centers(width, height, radius, orientation):
-            cells.append(
-                (hexagon_points(cx, cy, radius, orientation), average_color(rgb, cx, cy, radius))
-            )
-    elif shape == "triangle":
-        sample_radius = radius * math.sqrt(3) / 6
-        for points in triangle_grid(width, height, radius):
-            cx = sum(p[0] for p in points) / 3
-            cy = sum(p[1] for p in points) / 3
-            cells.append((points, average_color(rgb, cx, cy, sample_radius)))
-    else:
-        raise ValueError(f"Unknown shape: {shape}")
-    return build_svg(width, height, cells)
+    colorizer = ImageColorizer(rgb, tiling.sample_radius)
+    return Converter(tiling, colorizer).render(*rgb.size)
 
 
 def convert_file(
@@ -43,6 +43,21 @@ def convert_file(
     orientation: str = "pointy",
     shape: str = "hexagon",
 ) -> None:
-    """Read an image file and write the SVG version."""
+    """Read an image file and write its hexagonal or triangular SVG version."""
     svg = image_to_svg(load_image(source), radius, orientation, shape)
     Path(target).write_text(svg, encoding="utf-8")
+
+
+def generate_wallpaper(
+    width: int,
+    height: int,
+    palette: list[Color],
+    distribution: Distribution,
+    radius: float = 13.0,
+    orientation: str = "flat",
+    shape: str = "hexagon",
+) -> str:
+    """Generate an SVG wallpaper from a palette and a distribution function."""
+    tiling = make_tiling(shape, radius, orientation)
+    colorizer = PaletteColorizer(palette, distribution, width, height)
+    return Converter(tiling, colorizer).render(width, height)
