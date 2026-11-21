@@ -55,6 +55,39 @@ from png2svg.converter import convert_file
 convert_file("samples/input.jpg", "output.svg", radius=13, orientation="flat")
 ```
 
+The conversion is built on an object-oriented core: a `Tiling`
+(`HexagonTiling` / `TriangleTiling`) decides the cells, a `Colorizer`
+(`ImageColorizer` / `PaletteColorizer`) decides their color, and a
+`Converter` combines the two.
+
+### Generate a wallpaper from a palette (no input image)
+
+```bash
+uv run png2svg-generate wallpaper.svg --size 1920x1080 \
+    --palette "#1a1a2e,#16213e,#0f3460,#e94560" --distribution radial
+```
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `output` | Output SVG file | required |
+| `--size` | Canvas size `WxH` | `1920x1080` |
+| `--palette` | Comma-separated hex colors | a 4-color palette |
+| `--distribution` | `horizontal`, `vertical`, `diagonal` or `radial` | `diagonal` |
+| `--radius` | Cell radius/side | `13` |
+| `--shape` | `hexagon` or `triangle` | `hexagon` |
+
+```python
+from png2svg.coloring import DISTRIBUTIONS, parse_palette
+from png2svg.converter import generate_wallpaper
+
+svg = generate_wallpaper(
+    1920,
+    1080,
+    parse_palette("#1a1a2e,#e94560"),
+    DISTRIBUTIONS["radial"],
+)
+```
+
 ### Marimo notebook
 
 ```bash
@@ -96,11 +129,13 @@ png2svg/
 ├── notebooks/png2svg_notebook.py # Marimo notebook
 ├── samples/input.jpg             # sample input image
 ├── src/png2svg/
-│   ├── geometry.py               # hexagon vertices and grid centers
+│   ├── geometry.py               # hexagon/triangle vertices and grid centers
 │   ├── imaging.py                # image loading and color sampling
+│   ├── tiling.py                 # Tiling classes (hexagon, triangle)
+│   ├── coloring.py               # Colorizer classes + palette distributions
 │   ├── svg.py                    # SVG generation
-│   ├── converter.py              # full conversion pipeline
-│   └── cli.py                    # command-line interface
+│   ├── converter.py              # Converter class + functional facade
+│   └── cli.py                    # command-line interfaces
 ├── tests/                        # unit tests for each module
 └── pyproject.toml
 ```

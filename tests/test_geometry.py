@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from png2svg.geometry import hexagon_centers, hexagon_points, triangle_grid
+from png2svg.geometry import hexagon_centers, hexagon_points, triangle_cells
 
 
 def test_hexagon_has_six_points():
@@ -67,24 +67,32 @@ def test_unknown_orientation_raises():
         hexagon_points(0, 0, 10, orientation="diagonal")
 
 
-def test_triangles_have_three_vertices():
-    assert all(len(t) == 3 for t in triangle_grid(100, 100, 10))
+def test_triangle_cells_are_triangles():
+    cells = triangle_cells(50, 50, 10)
+    assert cells
+    assert all(len(points) == 3 for points in cells)
 
 
-def test_triangles_are_equilateral():
-    for a, b, c in triangle_grid(100, 100, 10):
-        for p, q in ((a, b), (b, c), (c, a)):
-            assert math.dist(p, q) == pytest.approx(10)
+def test_triangle_side_length_matches_the_parameter():
+    cells = triangle_cells(50, 50, 10)
+    for i, j in ((0, 1), (1, 2), (2, 0)):
+        (x1, y1), (x2, y2) = cells[0][i], cells[0][j]
+        assert math.hypot(x1 - x2, y1 - y2) == pytest.approx(10)
 
 
-def test_triangle_grid_covers_the_area():
-    points = [p for t in triangle_grid(100, 100, 10) for p in t]
-    assert min(p[0] for p in points) <= 0
-    assert max(p[0] for p in points) >= 100
-    assert min(p[1] for p in points) <= 0
-    assert max(p[1] for p in points) >= 100
+def test_triangle_grid_covers_the_image():
+    cells = triangle_cells(100, 100, 10)
+    xs = [x for points in cells for x, _ in points]
+    ys = [y for points in cells for _, y in points]
+    assert max(xs) >= 100
+    assert max(ys) >= 100
 
 
-def test_neighbouring_triangles_share_an_edge():
-    triangles = triangle_grid(100, 100, 10)
-    assert len(set(triangles[0]) & set(triangles[1])) == 2
+def test_triangle_grid_alternates_up_and_down():
+    cells = triangle_cells(40, 10, 10)
+    # In a tiling strip, both upward and downward triangles must appear.
+    apex_above_base = []
+    for points in cells:
+        ys = sorted(p[1] for p in points)
+        apex_above_base.append(ys[0] == pytest.approx(ys[1]))
+    assert any(apex_above_base) and not all(apex_above_base)

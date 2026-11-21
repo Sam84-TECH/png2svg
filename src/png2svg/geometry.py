@@ -1,4 +1,4 @@
-"""Hexagon geometry (pointy-top)."""
+"""Hexagon and triangle geometry."""
 
 import math
 
@@ -17,6 +17,30 @@ def hexagon_points(cx: float, cy: float, r: float, orientation: str = "pointy") 
         )
         for k in range(6)
     ]
+
+
+def triangle_cells(width: float, height: float, side: float) -> list[list[Point]]:
+    """Return triangle cells (3 vertices each) tiling a width x height area.
+
+    Equilateral triangles of the given side length, laid out in rows and
+    alternating between upward- and downward-pointing to interlock.
+    """
+    h = math.sqrt(3) / 2 * side
+    cells: list[list[Point]] = []
+    row, y_top = 0, 0.0
+    while y_top <= height:
+        y_bottom = y_top + h
+        col, x = 0, 0.0
+        while x <= width:
+            if (row + col) % 2 == 0:
+                cells.append([(x, y_bottom), (x + side, y_bottom), (x + side / 2, y_top)])
+            else:
+                cells.append([(x, y_top), (x + side, y_top), (x + side / 2, y_bottom)])
+            col += 1
+            x = col * side / 2
+        row += 1
+        y_top = row * h
+    return cells
 
 
 def hexagon_centers(
@@ -49,21 +73,7 @@ def hexagon_centers(
     return centers
 
 
-def triangle_grid(width: float, height: float, side: float) -> list[list[Point]]:
-    """Return equilateral triangles of the given side covering a width x height area."""
-    row_height = side * math.sqrt(3) / 2
-    triangles: list[list[Point]] = []
-    row = 0
-    while row * row_height <= height:
-        top = row * row_height
-        bottom = top + row_height
-        i = -1
-        while i * side / 2 <= width:
-            x0 = i * side / 2
-            if (i + row) % 2 == 0:  # apex up
-                triangles.append([(x0, bottom), (x0 + side, bottom), (x0 + side / 2, top)])
-            else:  # apex down
-                triangles.append([(x0, top), (x0 + side, top), (x0 + side / 2, bottom)])
-            i += 1
-        row += 1
-    return triangles
+def centroid(points: list[Point]) -> Point:
+    """Return the centroid (average of the vertices) of a polygon."""
+    n = len(points)
+    return (sum(x for x, _ in points) / n, sum(y for _, y in points) / n)
