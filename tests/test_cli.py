@@ -32,3 +32,12 @@ def test_parser_orientation_default_is_flat():
 def test_parser_orientation_pointy():
     args = build_parser().parse_args(["a.png", "b.svg", "--orientation", "pointy"])
     assert args.orientation == "pointy"
+
+
+def test_parser_shape_default_is_hexagon():
+    assert build_parser().parse_args(["a.png", "b.svg"]).shape == "hexagon"
+
+
+def test_parser_shape_triangle():
+    args = build_parser().parse_args(["a.png", "b.svg", "--shape", "triangle"])
+    assert args.shape == "triangle"
