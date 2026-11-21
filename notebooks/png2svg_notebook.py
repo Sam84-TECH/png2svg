@@ -27,15 +27,16 @@ def _():
     upload = mo.ui.file(filetypes=[".png", ".jpg", ".jpeg"], kind="area")
     radius = mo.ui.slider(3, 40, value=13, label="Radius")
     orientation = mo.ui.dropdown(["flat", "pointy"], value="flat", label="Orientation")
-    mo.vstack([upload, radius, orientation])
-    return orientation, radius, upload
+    shape = mo.ui.dropdown(["hexagon", "triangle"], value="hexagon", label="Shape")
+    mo.vstack([upload, radius, orientation, shape])
+    return orientation, radius, shape, upload
 
 
 @app.cell
-def _(orientation, radius, upload):
+def _(orientation, radius, shape, upload):
     mo.stop(not upload.value, mo.md("Upload an image to start the conversion."))
     img = Image.open(io.BytesIO(upload.contents()))
-    svg = image_to_svg(img, radius.value, orientation.value)
+    svg = image_to_svg(img, radius.value, orientation.value, shape.value)
     mo.Html(svg)
     return (svg,)
 

@@ -47,3 +47,23 @@ def hexagon_centers(
             col += 1
             x = col * dx
     return centers
+
+
+def triangle_grid(width: float, height: float, side: float) -> list[list[Point]]:
+    """Return equilateral triangles of the given side covering a width x height area."""
+    row_height = side * math.sqrt(3) / 2
+    triangles: list[list[Point]] = []
+    row = 0
+    while row * row_height <= height:
+        top = row * row_height
+        bottom = top + row_height
+        i = -1
+        while i * side / 2 <= width:
+            x0 = i * side / 2
+            if (i + row) % 2 == 0:  # apex up
+                triangles.append([(x0, bottom), (x0 + side, bottom), (x0 + side / 2, top)])
+            else:  # apex down
+                triangles.append([(x0, top), (x0 + side, top), (x0 + side / 2, bottom)])
+            i += 1
+        row += 1
+    return triangles
