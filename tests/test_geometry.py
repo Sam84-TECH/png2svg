@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from png2svg.geometry import hexagon_centers, hexagon_points
+from png2svg.geometry import hexagon_centers, hexagon_points, triangle_grid
 
 
 def test_hexagon_has_six_points():
@@ -65,3 +65,26 @@ def test_flat_top_column_spacing_is_1_5_r():
 def test_unknown_orientation_raises():
     with pytest.raises(ValueError):
         hexagon_points(0, 0, 10, orientation="diagonal")
+
+
+def test_triangles_have_three_vertices():
+    assert all(len(t) == 3 for t in triangle_grid(100, 100, 10))
+
+
+def test_triangles_are_equilateral():
+    for a, b, c in triangle_grid(100, 100, 10):
+        for p, q in ((a, b), (b, c), (c, a)):
+            assert math.dist(p, q) == pytest.approx(10)
+
+
+def test_triangle_grid_covers_the_area():
+    points = [p for t in triangle_grid(100, 100, 10) for p in t]
+    assert min(p[0] for p in points) <= 0
+    assert max(p[0] for p in points) >= 100
+    assert min(p[1] for p in points) <= 0
+    assert max(p[1] for p in points) >= 100
+
+
+def test_neighbouring_triangles_share_an_edge():
+    triangles = triangle_grid(100, 100, 10)
+    assert len(set(triangles[0]) & set(triangles[1])) == 2
